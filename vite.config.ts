@@ -6,6 +6,10 @@ import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as dotenv from 'dotenv';
 
+const isVercel = !!process.env.VERCEL;
+const isCloudflare = process.env.CF_PAGES === '1'; // of een andere env var die Cloudflare aanduidt
+
+
 // Load environment variables from multiple files
 dotenv.config({ path: '.env.local' });
 dotenv.config({ path: '.env' });
@@ -20,16 +24,16 @@ export default defineConfig((config) => {
       target: 'esnext',
     },
     plugins: [
-      nodePolyfills({
-        include: ['buffer', 'process', 'util', 'stream'],
-        globals: {
-          Buffer: true,
-          process: true,
-          global: true,
-        },
-        protocolImports: true,
-        exclude: ['child_process', 'fs', 'path'],
-      }),
+    nodePolyfills({
+    include: ['buffer', 'process', 'util', 'stream'],
+    globals: {
+      Buffer: true,
+      process: true,
+      global: true,
+    },
+    protocolImports: true,
+    exclude: ['child_process', 'fs', 'path'],
+  }),
       {
         name: 'buffer-polyfill',
         transform(code, id) {
